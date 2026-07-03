@@ -6,10 +6,10 @@ const DEFAULT_COMMAND_PREFIX = "!";
 const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 
 const envFiles = [
-  "../../../.env.local",
-  "../../../.env",
-  "../../.env.local",
-  "../../.env",
+  "../../../.env.local", // root level
+  "../../../.env", // root level
+  "../../.env.local", // inside bot dir
+  "../../.env", // inside bot dir
 ] as const;
 
 for (const path of envFiles) {
