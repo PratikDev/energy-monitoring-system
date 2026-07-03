@@ -10,6 +10,33 @@ The dashboard is already hosted at https://ems-ptsd.vercel.app/.
 
 You do not need to run the dashboard or Convex locally to test the Discord bot.
 
+## Quick Judge Setup
+
+The dashboard is hosted at https://ems-ptsd.vercel.app/.
+
+To run only the Discord bot locally:
+
+```bash
+make bot
+```
+
+If `make` is not available, run the same steps directly:
+
+```bash
+node scripts/setup-bot-env.mjs && docker compose up --build bot
+```
+
+The command will prompt for:
+
+- `DISCORD_BOT_TOKEN`
+- `DISCORD_ALERT_CHANNEL_ID`
+- `ALERT_POLL_INTERVAL_MS` (defaults to `30000`)
+- `GOOGLE_GENERATIVE_AI_API_KEY`
+
+The hosted Convex URL is already included in `bot/.env.example`; judges do not need to configure Convex. Docker and Node.js must be available before you run `make bot` or the fallback command.
+
+`make bot` creates `bot/.env` from `bot/.env.example` the first time. If `bot/.env` already exists, it reuses that file and starts Docker without prompting. To change values, delete `bot/.env` and run `make bot` again.
+
 ## Discord Bot Setup
 
 ### 1. Create a Discord application and bot
@@ -21,9 +48,9 @@ You do not need to run the dashboard or Convex locally to test the Discord bot.
 5. Go to **Bot**.
 6. Click **Add Bot** if needed.
 7. Copy or reset the token.
-8. Save it as `DISCORD_BOT_TOKEN`.
+8. Save it for the `DISCORD_BOT_TOKEN` prompt.
 
-Never commit your Discord bot token. Put it in `.env.local`.
+Never commit your Discord bot token. The setup command stores it in ignored local file `bot/.env`.
 
 ### 2. Enable Message Content Intent
 
@@ -57,70 +84,42 @@ No slash-command permissions are needed.
 3. Enable **Developer Mode**.
 4. Right-click the channel where alert posts should appear.
 5. Click **Copy Channel ID**.
-6. Save it as `DISCORD_ALERT_CHANNEL_ID`.
+6. Save it for the `DISCORD_ALERT_CHANNEL_ID` prompt.
 
-This channel ID is only for proactive alert posts. Commands work without `DISCORD_ALERT_CHANNEL_ID`.
+This channel ID is used for proactive alert posts.
 
-### 5. Configure environment variables
+### 5. Run the bot
 
-Create a root `.env.local` file:
-
-```env
-# Required: hosted Convex deployment used by the bot
-CONVEX_URL=https://your-convex-deployment.convex.cloud
-
-# Required: Discord bot login token
-DISCORD_BOT_TOKEN=your_discord_bot_token
-
-# Optional but recommended: channel for proactive alert posts
-DISCORD_ALERT_CHANNEL_ID=your_discord_channel_id
-
-# Optional: Gemini humanized responses
-GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=gemini-2.5-flash
-
-# Optional defaults
-BOT_COMMAND_PREFIX=!
-ALERT_POLL_INTERVAL_MS=30000
-```
-
-Notes:
-
-- `CONVEX_URL` can also be supplied as `VITE_CONVEX_URL`.
-- `GOOGLE_GENERATIVE_AI_API_KEY` is optional.
-- Without a Gemini key, the bot still works and uses plain factual fallback responses.
-- `ALERT_POLL_INTERVAL_MS` is clamped to at least `10000`.
-- `BOT_COMMAND_PREFIX` defaults to `!`.
-
-### 6. Install dependencies
-
-This repo uses Bun as its package manager.
+Run:
 
 ```bash
-bun install
+make bot
 ```
 
-### 7. Run the bot
-
-Development mode:
+If `make` is not installed:
 
 ```bash
-bun run bot:dev
+node scripts/setup-bot-env.mjs && docker compose up --build bot
 ```
 
-Normal start:
+If `bot/.env` is missing, the setup will prompt for:
 
-```bash
-bun run bot:start
+```text
+DISCORD_BOT_TOKEN
+DISCORD_ALERT_CHANNEL_ID
+ALERT_POLL_INTERVAL_MS [30000]
+GOOGLE_GENERATIVE_AI_API_KEY
 ```
 
-Expected successful output:
+`DISCORD_BOT_TOKEN`, `DISCORD_ALERT_CHANNEL_ID`, and `GOOGLE_GENERATIVE_AI_API_KEY` are required. `ALERT_POLL_INTERVAL_MS` is optional and defaults to `30000`; values under `10000` are raised to `10000`.
+
+Expected successful bot output:
 
 ```text
 Office energy bot is online as <bot-name>.
 ```
 
-### 8. Test bot commands
+### 6. Test bot commands
 
 Send these messages in Discord:
 
@@ -143,7 +142,7 @@ Expected behavior:
 - invalid room gets a helpful room list.
 - unknown command gets a command help message.
 
-### 9. Test proactive alerts
+### 7. Test proactive alerts
 
 If you have Convex CLI access to the deployment and demo controls are enabled, you can force a test alert:
 
@@ -162,12 +161,14 @@ If you do not have Convex CLI access, you can still test normal commands. Proact
 
 ## Bot Environment Variables
 
+`make bot` writes these values to `bot/.env`. The file is local and ignored by Git.
+
 | Variable | Required | Default | Purpose |
 |---|---:|---|---|
-| `CONVEX_URL` | Yes | fallback to `VITE_CONVEX_URL` | Hosted Convex deployment URL |
+| `CONVEX_URL` | Yes | prefilled in `bot/.env.example` | Hosted Convex deployment URL |
 | `DISCORD_BOT_TOKEN` | Yes | none | Discord bot login token |
-| `DISCORD_ALERT_CHANNEL_ID` | No | none | Channel for proactive alerts |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | No | none | Enables Gemini humanized responses |
+| `DISCORD_ALERT_CHANNEL_ID` | Yes | none | Channel for proactive alerts |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Yes | none | Enables Gemini humanized responses |
 | `GEMINI_MODEL` | No | `gemini-2.5-flash` | Gemini model name |
 | `BOT_COMMAND_PREFIX` | No | `!` | Prefix for bot commands |
 | `ALERT_POLL_INTERVAL_MS` | No | `30000` | Alert polling interval |
@@ -176,10 +177,12 @@ If you do not have Convex CLI access, you can still test normal commands. Proact
 
 ### Bot does not come online
 
-- `DISCORD_BOT_TOKEN` is set.
+- Docker is running.
+- Node.js is available for the setup prompt.
+- `DISCORD_BOT_TOKEN` is set in `bot/.env`.
 - token has not been reset after copying.
 - bot was invited to the server.
-- `bun run bot:dev` is running.
+- `make bot` is running.
 
 ### Bot ignores `!status`
 
@@ -190,7 +193,7 @@ If you do not have Convex CLI access, you can still test normal commands. Proact
 
 ### Bot replies, but proactive alerts do not post
 
-- `DISCORD_ALERT_CHANNEL_ID` is set.
+- `DISCORD_ALERT_CHANNEL_ID` is set in `bot/.env`.
 - channel ID was copied with Developer Mode.
 - bot has `View Channels` and `Send Messages` permission in that channel.
 - active alerts that existed before startup are intentionally marked seen.
@@ -198,24 +201,37 @@ If you do not have Convex CLI access, you can still test normal commands. Proact
 
 ### Gemini responses are not humanized
 
-- `GOOGLE_GENERATIVE_AI_API_KEY` is set.
+- `GOOGLE_GENERATIVE_AI_API_KEY` is set in `bot/.env`.
 - `GEMINI_MODEL` is valid.
-- fallback responses are expected when the key is missing or Gemini fails.
+- fallback responses are expected if Gemini fails.
 
 ### Convex connection error
 
-- `CONVEX_URL` is set to the hosted Convex deployment URL.
-- if using `VITE_CONVEX_URL` fallback, it points to the same deployment.
+- `CONVEX_URL` is present in `bot/.env`.
+- `CONVEX_URL` points to the hosted Convex deployment.
 - hosted backend is reachable.
+
+### Need to change env values
+
+Delete `bot/.env` and run:
+
+```bash
+make bot
+```
+
+The setup command will copy `bot/.env.example` again and reprompt.
 
 ## Available Scripts
 
 ```bash
-bun run bot:dev        # Run bot with watch mode
-bun run bot:start      # Run bot once
-bun run bot:typecheck  # Typecheck bot package
-bun run lint           # Lint repo
-bun run build          # Build hosted dashboard app
+make bot              # Prompt for bot env if needed, then run Docker bot
+make bot-stop         # Stop Docker bot service
+make bot-logs         # Follow Docker bot logs
+bun run bot:dev       # Developer mode without Docker
+bun run bot:start     # Run bot once without Docker
+bun run bot:typecheck # Typecheck bot package
+bun run lint          # Lint repo
+bun run build         # Build hosted dashboard app
 ```
 
 `bun run build` is not required just to run the bot. It is useful for final repo validation.
