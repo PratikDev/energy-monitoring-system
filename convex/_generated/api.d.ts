@@ -8,8 +8,10 @@
  * @module
  */
 
+import type * as crons from "../crons.js";
 import type * as domain from "../domain.js";
 import type * as seed from "../seed.js";
+import type * as simulator from "../simulator.js";
 
 import type {
   ApiFromModules,
@@ -18,8 +20,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  crons: typeof crons;
   domain: typeof domain;
   seed: typeof seed;
+  simulator: typeof simulator;
 }>;
 
 /**
