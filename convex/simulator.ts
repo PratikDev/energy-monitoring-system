@@ -1,6 +1,7 @@
 import { env, internalMutation, mutation } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import { ROOM_IDS, roomValidator, type RoomId } from "./domain";
+import { evaluateCurrentAlerts } from "./alerts";
 
 type Device = Doc<"devices">;
 
@@ -176,6 +177,7 @@ export const simulatorTick = internalMutation({
       timestamp: now,
       totalWatts,
     });
+    await evaluateCurrentAlerts(ctx, now);
 
     return {
       status: "ticked",
