@@ -1,0 +1,14 @@
+.git
+node_modules
+bot/node_modules
+dist
+dist-ssr
+*.log
+.env
+.env.*
+bot/.env
+bot/.env.*
+!*.env.example
+!bot/.env.example
+plan.md
+problem-statement.md
