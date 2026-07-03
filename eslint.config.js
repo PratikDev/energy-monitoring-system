@@ -22,4 +22,10 @@ export default defineConfig([
       'react-refresh/only-export-components': 'off',
     },
   },
+  {
+    files: ['bot/**/*.ts'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])

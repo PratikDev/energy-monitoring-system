@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": ["bot"],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -12,7 +13,10 @@
     "convex": "bunx convex dev --once",
     "convex:watch": "bunx convex dev",
     "convex:deploy": "bunx convex deploy",
-    "convex:dash": "bunx convex dash"
+    "convex:dash": "bunx convex dash",
+    "bot:dev": "bun --cwd bot dev",
+    "bot:start": "bun --cwd bot start",
+    "bot:typecheck": "bun --cwd bot typecheck"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",

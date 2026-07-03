@@ -1,0 +1,20 @@
+{
+  "name": "energy-monitoring-system-bot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "latest",
+    "ai": "latest",
+    "discord.js": "^14.0.0",
+    "dotenv": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "~6.0.2"
+  }
+}
