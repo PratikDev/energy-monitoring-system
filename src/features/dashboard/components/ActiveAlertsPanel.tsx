@@ -1,7 +1,10 @@
-import { AlarmClock, CheckCircle2, Flame, TriangleAlert } from "lucide-react"
+import { useMutation } from "convex/react"
+import { AlarmClock, CheckCircle2, Flame, TestTube2, TriangleAlert } from "lucide-react"
+import { useState } from "react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
 	Card,
 	CardContent,
@@ -9,7 +12,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import { api } from "../../../../convex/_generated/api"
 
 import {
 	formatRelativeTime,
@@ -22,11 +31,45 @@ type ActiveAlertsPanelProps = {
 }
 
 export function ActiveAlertsPanel({ alerts }: ActiveAlertsPanelProps) {
+	const forceAlertState = useMutation(api.simulator.forceAlertState)
+	const [isForcingAlert, setIsForcingAlert] = useState(false)
+
+	async function handleForceAlertState() {
+		setIsForcingAlert(true)
+
+		try {
+			await forceAlertState({ room: "work2" })
+		} catch (error) {
+			console.error("Failed to force alert state.", error)
+		} finally {
+			setIsForcingAlert(false)
+		}
+	}
+
 	return (
 		<Card className="lg:sticky lg:top-6">
 			<CardHeader>
-				<CardTitle>Active alerts</CardTitle>
-				<CardDescription>{alerts.length} currently unresolved</CardDescription>
+				<div className="flex items-start justify-between gap-3">
+					<div className="flex flex-col gap-1.5">
+						<CardTitle>Active alerts</CardTitle>
+						<CardDescription>{alerts.length} currently unresolved</CardDescription>
+					</div>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								disabled={isForcingAlert}
+								onClick={handleForceAlertState}
+								size="sm"
+								type="button"
+								variant="outline"
+							>
+								<TestTube2 />
+								Force Alert State
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>for testing only</TooltipContent>
+					</Tooltip>
+				</div>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-3">
 				{alerts.length === 0 ? (

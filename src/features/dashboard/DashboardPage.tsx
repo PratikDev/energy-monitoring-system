@@ -1,4 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { ActiveAlertsPanel } from "./components/ActiveAlertsPanel"
 import { DashboardHeader } from "./components/DashboardHeader"
@@ -41,8 +42,18 @@ export function DashboardPage() {
 				<div className="grid gap-5 lg:grid-cols-12">
 					<div className="flex flex-col gap-5 lg:col-span-8">
 						<PowerSummaryPanel usageSummary={data.usageSummary} />
-						<OfficeFloorplan rooms={data.allDevices.rooms} />
-						<DeviceStatusPanel rooms={data.allDevices.rooms} />
+						<Tabs className="w-full" defaultValue="floorplan">
+							<TabsList>
+								<TabsTrigger value="floorplan">Floorplan</TabsTrigger>
+								<TabsTrigger value="status">Device status</TabsTrigger>
+							</TabsList>
+							<TabsContent value="floorplan">
+								<OfficeFloorplan rooms={data.allDevices.rooms} />
+							</TabsContent>
+							<TabsContent value="status">
+								<DeviceStatusPanel rooms={data.allDevices.rooms} />
+							</TabsContent>
+						</Tabs>
 					</div>
 					<div className="lg:col-span-4">
 						<ActiveAlertsPanel alerts={data.activeAlerts.alerts} />
