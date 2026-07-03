@@ -8,10 +8,13 @@
  * @module
  */
 
+import type * as alerts from "../alerts.js";
 import type * as crons from "../crons.js";
 import type * as domain from "../domain.js";
+import type * as office from "../office.js";
 import type * as seed from "../seed.js";
 import type * as simulator from "../simulator.js";
+import type * as time from "../time.js";
 
 import type {
   ApiFromModules,
@@ -20,10 +23,13 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  alerts: typeof alerts;
   crons: typeof crons;
   domain: typeof domain;
+  office: typeof office;
   seed: typeof seed;
   simulator: typeof simulator;
+  time: typeof time;
 }>;
 
 /**
