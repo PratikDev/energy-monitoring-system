@@ -10,6 +10,12 @@ The dashboard is already hosted at https://ems-ptsd.vercel.app/.
 
 You do not need to run the dashboard or Convex locally to test the Discord bot.
 
+## System Diagram
+
+The high-level system design is available here:
+
+[System diagram](docs/system-diagram.svg)
+
 ## Quick Judge Setup
 
 The dashboard is hosted at https://ems-ptsd.vercel.app/.
@@ -246,3 +252,13 @@ The Discord bot does not calculate office state itself. It calls the same Convex
 - `office:getActiveAlerts`
 
 Gemini only rewrites already-computed data into friendlier language. If Gemini is unavailable, the bot falls back to plain deterministic responses using the same Convex data.
+
+## How the Simulation Works
+
+The office data is simulated inside Convex. The seed function creates 15 devices: 3 rooms with 2 fans and 3 lights each. Every device stores its room, type, on/off status, current watt draw, rated watts, and `lastChanged` timestamp.
+
+A Convex cron runs `simulatorTick` every 10 seconds. Each tick randomly flips a small number of devices so the office changes gradually instead of all at once. When a device turns on, its watt draw is set near its rated wattage with small jitter; when it turns off, its watt draw becomes `0`. Devices that do not change keep their existing `lastChanged` value.
+
+After each tick, Convex writes the current total watts to `powerLog` and evaluates alerts. Alerts are persisted in the `alerts` table, deduped while active, and resolved when the condition stops being true. The dashboard subscribes to this Convex data live, and the Discord bot reads the same query functions, so both interfaces reflect the same simulated office state.
+
+For demos, `forceAlertState` can turn all devices in one room on and backdate their `lastChanged` values so the sustained-room alert can be shown without waiting two real hours. This mutation is guarded by the `ENABLE_DEMO_CONTROLS` Convex env flag.
