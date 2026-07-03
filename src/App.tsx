@@ -1,5 +1,7 @@
+import { DashboardPage } from "@/features/dashboard/DashboardPage"
+
 function App() {
-	return <>Hello</>;
+	return <DashboardPage />
 }
 
-export default App;
+export default App
