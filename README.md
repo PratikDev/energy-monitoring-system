@@ -164,6 +164,23 @@ Both the dashboard and Discord bot consume the exact same Convex queries:
 
 ---
 
+## 🔌 Hardware / Electrical Schematic
+
+This is a **concept-only** Wokwi circuit — it is not wired to the live
+dashboard or bot in any way, since no physical hardware is required to run
+this project. It exists to answer a separate requirement: *"if this office
+actually had smart-controlled lights and fans, how would you wire and sense
+them?"*
+
+It models one representative room — **Work Room 1** (3 lights + 2 fans) —
+showing an ESP32 switching each device through a relay module, plus a
+current-sense tap standing in for an ACS712 sensor. The same pattern would
+repeat for the other two rooms.
+
+👉 **[Hardware schematic, sketch, and wiring notes →](docs/hardware-schematic/README.md)**
+👉 **[Open live in Wokwi →](https://wokwi.com/projects/468589357038198785)**
+
+
 ## 🔄 How the Simulation Works
 
 The office data is simulated entirely inside Convex — no external processes needed.
