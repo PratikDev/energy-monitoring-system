@@ -19,6 +19,31 @@ The bot polls for new alerts every 30 seconds and posts to a configured Discord 
 - Devices are left on **after office hours** (outside 9 AM–5 PM)
 - **All 5 devices** in a room have been on for 2+ hours straight
 
+## Structure
+
+```
+bot/src/
+├── index.ts              # Entry point — Discord client setup
+├── commands/
+│   ├── handleMessage.ts  # Command router (prefix matching)
+│   ├── status.ts         # !status handler
+│   ├── room.ts           # !room <name> handler
+│   └── usage.ts          # !usage handler
+├── alerts/
+│   └── alertLoop.ts      # Proactive alert polling loop
+├── llm/
+│   └── humanize.ts       # Gemini integration + fallback
+├── convex/
+│   ├── client.ts         # ConvexHttpClient singleton
+│   └── queries.ts        # Typed wrappers for Convex queries
+├── config/
+│   └── env.ts            # Environment variable loading & validation
+└── lib/
+    ├── rooms.ts           # Room ID/alias resolution
+    ├── formatters.ts      # Watts/kWh/time formatting + Discord truncation
+    └── fallbackResponses.ts  # Deterministic plain-text response builders
+```
+
 ## Running
 
 ```bash
