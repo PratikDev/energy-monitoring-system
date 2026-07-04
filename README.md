@@ -396,6 +396,17 @@ energy-monitoring-system/
 
 ---
 
+## 🐛 Troubleshooting
+
+| Symptom | Likely Cause | Fix |
+|---|---|---|
+| Bot won't start | Missing `DISCORD_BOT_TOKEN` | Run `make bot` again or check `bot/.env` |
+| `!status` returns nothing | `CONVEX_URL` is wrong or unreachable | Verify the URL in `bot/.env` is the active Convex deployment |
+| No alert posts in Discord | `DISCORD_ALERT_CHANNEL_ID` is wrong | Double-check the channel ID with Developer Mode enabled |
+| Gemini responses are robotic | `GOOGLE_GENERATIVE_AI_API_KEY` is missing or invalid | Check the key; the bot falls back to deterministic text if Gemini fails |
+| Dashboard data isn't updating | Convex dev server is not running | Run `bun run convex` or `bun run convex:watch` |
+| `bun run build` fails | TypeScript errors or missing deps | Run `bun install` then check `bun run lint` first |
+
 ## 📜 Available Scripts
 
 ```bash
