@@ -45,6 +45,10 @@ ESP32 (controller)
   on → expect ~X watts" against what's actually being drawn, and flag a
   mismatch (e.g. a stuck relay).
 
+### GPIO Pin Selection
+
+The chosen GPIO pins (22, 23, 18, 19, 21) avoid the ESP32's strapping pins (GPIO 0, 2, 5, 12, 15) which affect boot mode if pulled high or low at startup. Pin 34 is used for ADC because it is input-only (no internal pull-up/pull-down resistor), making it ideal for analog sensing.
+
 ## Why this is separate from the rest of the project
 
 The project's actual device data — the 15 devices, their on/off state, watts,
