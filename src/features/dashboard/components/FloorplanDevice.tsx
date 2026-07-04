@@ -1,50 +1,50 @@
-import { Fan, Lightbulb } from "lucide-react"
-
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
-import {
-	formatRelativeTime,
-	formatWatts,
-} from "../lib/dashboard-formatters"
-import type { DeviceView } from "../lib/dashboard-types"
+import { formatRelativeTime, formatWatts } from "../lib/dashboard-formatters";
+import type { DeviceView } from "../lib/dashboard-types";
+import CeilingFan from "./floorplan/CeilingFan";
+import CeilingLamp from "./floorplan/CeilingLamp";
 
 type FloorplanDeviceProps = {
-	device: DeviceView
-	x: number
-	y: number
-}
+	device: DeviceView;
+	x: number;
+	y: number;
+};
 
 export function FloorplanDevice({ device, x, y }: FloorplanDeviceProps) {
-	const Icon = device.type === "fan" ? Fan : Lightbulb
-
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<button
+				<div
 					aria-label={`${device.roomLabel} ${device.name} ${
 						device.status ? "on" : "off"
 					}`}
 					className={cn(
-						"absolute flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border bg-floorplan-device-off text-muted-foreground shadow-sm transition-all duration-300",
-						device.status &&
-							device.type === "fan" &&
-							"border-success/40 bg-success/15 text-success shadow-success/20",
+						"absolute -translate-x-1/2 -translate-y-1/2 rounded-full",
 						device.status &&
 							device.type === "light" &&
-							"floorplan-light-on border-warning/50 bg-warning/20 text-warning shadow-warning/20",
+							"floorplan-light-on border-warning/50 bg-warning/20 shadow-warning/20",
 					)}
 					style={{ left: `${x}%`, top: `${y}%` }}
-					type="button"
 				>
-					<Icon
-						className={cn(device.status && device.type === "fan" && "animate-fan-spin")}
-					/>
-				</button>
+					{device.type === "fan" ? (
+						<CeilingFan
+							className="size-20"
+							spinning={device.status}
+							speed={0.7}
+						/>
+					) : (
+						<CeilingLamp
+							on={device.status}
+							className="size-12"
+						/>
+					)}
+				</div>
 			</TooltipTrigger>
 			<TooltipContent>
 				<div className="flex flex-col gap-1">
@@ -57,5 +57,5 @@ export function FloorplanDevice({ device, x, y }: FloorplanDeviceProps) {
 				</div>
 			</TooltipContent>
 		</Tooltip>
-	)
+	);
 }

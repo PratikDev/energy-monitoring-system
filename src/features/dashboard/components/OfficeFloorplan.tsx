@@ -4,22 +4,22 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
-import { DEVICE_POSITIONS } from "../lib/floorplan-layout"
-import type { DeviceView, RoomGroup, RoomId } from "../lib/dashboard-types"
-import { FloorplanDevice } from "./FloorplanDevice"
+import type { DeviceView, RoomGroup, RoomId } from "../lib/dashboard-types";
+import { DEVICE_POSITIONS } from "../lib/floorplan-layout";
+import { FloorplanDevice } from "./FloorplanDevice";
 
 type OfficeFloorplanProps = {
-	rooms: RoomGroup[]
-}
+	rooms: RoomGroup[];
+};
 
 function findDevice(devices: DeviceView[], room: RoomId, deviceName: string) {
 	return devices.find(
 		(device) => device.room === room && device.name === deviceName,
-	)
+	);
 }
 
 function RoomDecor({ room }: { room: RoomId }) {
@@ -31,7 +31,7 @@ function RoomDecor({ room }: { room: RoomId }) {
 				<div className="absolute left-[63%] top-[43%] size-7 rounded-md border bg-background" />
 				<div className="absolute bottom-3 left-1/2 h-2 w-20 -translate-x-1/2 rounded-full bg-border" />
 			</>
-		)
+		);
 	}
 
 	return (
@@ -42,11 +42,11 @@ function RoomDecor({ room }: { room: RoomId }) {
 			<div className="absolute right-[28%] top-[57%] size-7 rounded-md border bg-background" />
 			<div className="absolute bottom-3 left-1/2 h-2 w-20 -translate-x-1/2 rounded-full bg-border" />
 		</>
-	)
+	);
 }
 
 export function OfficeFloorplan({ rooms }: OfficeFloorplanProps) {
-	const devices = rooms.flatMap((room) => room.devices)
+	const devices = rooms.flatMap((room) => room.devices);
 
 	return (
 		<Card>
@@ -56,12 +56,12 @@ export function OfficeFloorplan({ rooms }: OfficeFloorplanProps) {
 			</CardHeader>
 			<CardContent>
 				<ScrollArea className="w-full rounded-lg border">
-					<div className="min-w-[840px]">
-						<div className="grid min-h-[320px] grid-cols-3 bg-muted/30">
+					<div className="min-w-210">
+						<div className="grid grid-cols-2 md:grid-cols-3 bg-muted/30">
 							{rooms.map((room, index) => (
 								<div
 									className={cn(
-										"relative overflow-hidden bg-floorplan-room p-4",
+										"relative min-h-87.5 overflow-hidden bg-floorplan-room p-4",
 										index > 0 && "border-l border-floorplan-room-border",
 									)}
 									key={room.room}
@@ -77,10 +77,10 @@ export function OfficeFloorplan({ rooms }: OfficeFloorplanProps) {
 											devices,
 											position.room,
 											position.deviceName,
-										)
+										);
 
 										if (!device) {
-											return null
+											return null;
 										}
 
 										return (
@@ -90,7 +90,7 @@ export function OfficeFloorplan({ rooms }: OfficeFloorplanProps) {
 												x={position.x}
 												y={position.y}
 											/>
-										)
+										);
 									})}
 								</div>
 							))}
@@ -100,5 +100,5 @@ export function OfficeFloorplan({ rooms }: OfficeFloorplanProps) {
 				</ScrollArea>
 			</CardContent>
 		</Card>
-	)
+	);
 }
