@@ -15,8 +15,7 @@ project — same files).
 
 One representative room — **Work Room 1** (3 lights + 2 fans) — out of the
 office's 15 devices. The same pattern repeats for the other two rooms; wiring
-18 relays would just be repetition of this unit, so one room is shown in full.
-
+15 relays would just be repetition of this unit, so one room is shown in full.
 ```
 ESP32 (controller)
  ├─ GPIO 22 ──▶ Relay 1 IN ──▶ Relay 1 COM/NO ──▶ Light 1 (mains wire in real life)
