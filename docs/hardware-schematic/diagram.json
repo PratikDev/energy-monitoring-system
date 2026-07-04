@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "author": "Energy Monitoring System",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+
+    { "type": "wokwi-relay-module", "id": "relayLight1", "top": -220, "left": 280, "attrs": {} },
+    { "type": "wokwi-relay-module", "id": "relayLight2", "top": -140, "left": 280, "attrs": {} },
+    { "type": "wokwi-relay-module", "id": "relayLight3", "top": -60, "left": 280, "attrs": {} },
+    { "type": "wokwi-relay-module", "id": "relayFan1", "top": 40, "left": 280, "attrs": {} },
+    { "type": "wokwi-relay-module", "id": "relayFan2", "top": 120, "left": 280, "attrs": {} },
+
+    { "type": "wokwi-resistor", "id": "rLight1", "top": -210, "left": 470, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "rLight2", "top": -130, "left": 470, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "rLight3", "top": -50, "left": 470, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "rFan1", "top": 50, "left": 470, "rotate": 90, "attrs": { "value": "150" } },
+    { "type": "wokwi-resistor", "id": "rFan2", "top": 130, "left": 470, "rotate": 90, "attrs": { "value": "150" } },
+
+    { "type": "wokwi-led", "id": "light1", "top": -230, "left": 540, "attrs": { "color": "yellow" } },
+    { "type": "wokwi-led", "id": "light2", "top": -150, "left": 540, "attrs": { "color": "yellow" } },
+    { "type": "wokwi-led", "id": "light3", "top": -70, "left": 540, "attrs": { "color": "yellow" } },
+    { "type": "wokwi-led", "id": "fan1", "top": 30, "left": 540, "attrs": { "color": "blue" } },
+    { "type": "wokwi-led", "id": "fan2", "top": 110, "left": 540, "attrs": { "color": "blue" } },
+
+    { "type": "wokwi-vcc", "id": "vccLoads", "top": -260, "left": 620, "attrs": {} },
+    { "type": "wokwi-gnd", "id": "gndLoads", "top": 150, "left": 620, "attrs": {} },
+
+    { "type": "wokwi-potentiometer", "id": "currentSenseSim", "top": 60, "left": -260, "attrs": { "value": "50" } },
+    { "type": "wokwi-gnd", "id": "gndEsp", "top": 160, "left": -20, "attrs": {} }
+  ],
+  "connections": [
+    ["esp:VIN", "relayLight1:VCC", "red", ["v0"]],
+    ["esp:VIN", "relayLight2:VCC", "red", ["v0"]],
+    ["esp:VIN", "relayLight3:VCC", "red", ["v0"]],
+    ["esp:VIN", "relayFan1:VCC", "red", ["v0"]],
+    ["esp:VIN", "relayFan2:VCC", "red", ["v0"]],
+
+    ["esp:GND.1", "relayLight1:GND", "black", ["v0"]],
+    ["esp:GND.1", "relayLight2:GND", "black", ["v0"]],
+    ["esp:GND.1", "relayLight3:GND", "black", ["v0"]],
+    ["esp:GND.1", "relayFan1:GND", "black", ["v0"]],
+    ["esp:GND.1", "relayFan2:GND", "black", ["v0"]],
+    ["esp:GND.1", "gndEsp:GND", "black", ["v0"]],
+
+    ["esp:D22", "relayLight1:IN", "orange", ["v0"]],
+    ["esp:D23", "relayLight2:IN", "orange", ["v0"]],
+    ["esp:D18", "relayLight3:IN", "orange", ["v0"]],
+    ["esp:D19", "relayFan1:IN", "orange", ["v0"]],
+    ["esp:D21", "relayFan2:IN", "orange", ["v0"]],
+
+    ["vccLoads:VCC", "relayLight1:COM", "red", ["v0"]],
+    ["vccLoads:VCC", "relayLight2:COM", "red", ["v0"]],
+    ["vccLoads:VCC", "relayLight3:COM", "red", ["v0"]],
+    ["vccLoads:VCC", "relayFan1:COM", "red", ["v0"]],
+    ["vccLoads:VCC", "relayFan2:COM", "red", ["v0"]],
+
+    ["relayLight1:NO", "rLight1:1", "red", ["v0"]],
+    ["relayLight2:NO", "rLight2:1", "red", ["v0"]],
+    ["relayLight3:NO", "rLight3:1", "red", ["v0"]],
+    ["relayFan1:NO", "rFan1:1", "red", ["v0"]],
+    ["relayFan2:NO", "rFan2:1", "red", ["v0"]],
+
+    ["rLight1:2", "light1:A", "red", ["v0"]],
+    ["rLight2:2", "light2:A", "red", ["v0"]],
+    ["rLight3:2", "light3:A", "red", ["v0"]],
+    ["rFan1:2", "fan1:A", "red", ["v0"]],
+    ["rFan2:2", "fan2:A", "red", ["v0"]],
+
+    ["light1:C", "gndLoads:GND", "black", ["v0"]],
+    ["light2:C", "gndLoads:GND", "black", ["v0"]],
+    ["light3:C", "gndLoads:GND", "black", ["v0"]],
+    ["fan1:C", "gndLoads:GND", "black", ["v0"]],
+    ["fan2:C", "gndLoads:GND", "black", ["v0"]],
+
+    ["currentSenseSim:VCC", "esp:3V3", "red", ["v0"]],
+    ["currentSenseSim:GND", "esp:GND.1", "black", ["v0"]],
+    ["currentSenseSim:SIG", "esp:D34", "green", ["v0"]]
+  ]
+}
