@@ -421,7 +421,10 @@ make bot-stop             # Stop Docker bot
 make bot-logs             # Follow Docker bot logs
 
 # Convex
-bun run convex            # Run Convex dev server once
+bun run convex            # Push functions once
+bun run convex:watch      # Watch mode (auto-push on changes)
+bun run convex:dash       # Open Convex dashboard
+bun run convex:deploy     # Deploy to production
 ```
 
 ---
