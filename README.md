@@ -27,6 +27,27 @@
 
 ---
 
+## 💡 The Problem
+
+People keep leaving lights and fans on when they head home. The electricity bill climbs, and nobody notices until it's too late.
+
+The fix? A system that lets anyone monitor the office's electrical devices through both a **live web dashboard** and a **Discord bot** — because some people live in their browser and others never leave Discord.
+
+## 🏠 The Office
+
+The office has **3 rooms**, each with the same set of devices:
+
+| Room | Purpose | Fans | Lights | Total |
+|---|---|:---:|:---:|:---:|
+| Drawing Room | Waiting area | 2 | 3 | 5 |
+| Work Room 1 | Employee workspace | 2 | 3 | 5 |
+| Work Room 2 | Employee workspace | 2 | 3 | 5 |
+| | | | **Total** | **15** |
+
+Each device tracks: **on/off status**, **live wattage** (fans ~60W, lights ~15W), **room**, and **last state change timestamp**.
+
+---
+
 ## ✨ Features at a Glance
 
 | | Feature | Description |
@@ -75,6 +96,39 @@
 
 ---
 
+## 🤖 Discord Bot in Action
+
+The bot pulls live data from the same backend as the dashboard. Gemini rephrases the raw data into friendly, conversational responses — but never invents or alters any numbers.
+
+**`!status`** — whole-office overview:
+```
+📊 Here's the current office snapshot: Drawing Room has both fans
+and all 3 lights running at 163W. Over in Work Room 1, both fans
+and 1 light are on, pulling 141W. Work Room 2 has both fans and
+1 light going for 134W. The office total sits at 438W right now.
+```
+
+**`!room work1`** — single room detail:
+```
+🏢 Work Room 1: 2 of 2 fans and 1 of 3 lights are ON.
+Total room power: 141W.
+- Fan 1 (fan): ON, 62W, last changed 12m ago.
+- Fan 2 (fan): ON, 63W, last changed 23s ago.
+- Light 1 (light): OFF, 0W, last changed 5m ago.
+- Light 2 (light): OFF, 0W, last changed 6m ago.
+- Light 3 (light): ON, 16W, last changed 1m ago.
+```
+
+**`!usage`** — power consumption summary:
+```
+⚡ The office is currently drawing 438W. Estimated usage
+for today so far is 1.941 kWh across all three rooms.
+```
+
+If Gemini is unavailable, the bot falls back to plain deterministic responses using the same live data — no AI required for core functionality.
+
+---
+
 ## 🏗️ System Architecture
 
 The web dashboard and the Discord bot share a **single Convex backend** — one source of truth for all device state, power logs, and alerts.
@@ -92,6 +146,10 @@ The web dashboard and the Discord bot share a **single Convex backend** — one 
 ```
 
 The full system diagram (Excalidraw) is available here: [**System Diagram →**](docs/system-diagram.svg)
+
+### Why Convex?
+
+Convex was chosen because it solves the hardest constraint in the problem — **real-time updates without page refresh**. The dashboard subscribes to live queries over WebSocket; when the simulator flips a device every 3 seconds, every connected client sees the change instantly. Server-side crons handle the simulation tick and alert evaluation without any external scheduler. And since both the dashboard and the Discord bot call the same query functions, there's genuinely one source of truth — not two systems duct-taped together.
 
 ### Shared Query Functions
 
@@ -120,6 +178,17 @@ The office data is simulated entirely inside Convex — no external processes ne
 5. Evaluates alert conditions and creates/resolves alerts.
 
 **Alerts are auto-managed:** New alerts are deduplicated by condition. When a condition clears, the alert is resolved automatically.
+
+### Alert Conditions
+
+The system watches for two anomalies:
+
+| Alert | Trigger | Example Message |
+|---|---|---|
+| **After hours** | Any device ON outside 9 AM – 5 PM | *"Drawing Room has 3 devices still on after office hours."* |
+| **Sustained usage** | All 5 devices in a room ON for 2+ hours straight | *"All 5 devices in Work Room 1 have been on for over 2 hours."* |
+
+The Discord bot also **proactively posts** to a designated channel when a new alert fires — e.g., *"⚠ Hey! Work Room 2 still has 2 fans and 3 lights ON and it's 10 PM. Did someone forget to leave?"*
 
 **Demo controls:** The `forceAlertState` mutation (gated behind `ENABLE_DEMO_CONTROLS` env flag) can instantly trigger a sustained-room alert by turning all devices on in a room and backdating their timestamps by 2+ hours.
 
