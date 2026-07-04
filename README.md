@@ -148,23 +148,6 @@ Expected behavior:
 - invalid room gets a helpful room list.
 - unknown command gets a command help message.
 
-### 7. Test proactive alerts
-
-If you have Convex CLI access to the deployment and demo controls are enabled, you can force a test alert:
-
-```bash
-bunx convex run simulator:forceAlertState '{"room":"work2"}'
-bunx convex run alerts:evaluateAlerts
-```
-
-Expected behavior:
-
-- The bot posts one new alert message in `DISCORD_ALERT_CHANNEL_ID`.
-- Existing alerts present before bot startup are marked seen and are not posted.
-- New alert IDs are posted only once during the current bot process.
-
-If you do not have Convex CLI access, you can still test normal commands. Proactive alert posting will work whenever the hosted backend creates a new active alert.
-
 ## Bot Environment Variables
 
 `make bot` writes these values to `bot/.env`. The file is local and ignored by Git.
@@ -178,54 +161,6 @@ If you do not have Convex CLI access, you can still test normal commands. Proact
 | `GEMINI_MODEL` | No | `gemini-2.5-flash` | Gemini model name |
 | `BOT_COMMAND_PREFIX` | No | `!` | Prefix for bot commands |
 | `ALERT_POLL_INTERVAL_MS` | No | `30000` | Alert polling interval |
-
-## Troubleshooting
-
-### Bot does not come online
-
-- Docker is running.
-- Node.js is available for the setup prompt.
-- `DISCORD_BOT_TOKEN` is set in `bot/.env`.
-- token has not been reset after copying.
-- bot was invited to the server.
-- `make bot` is running.
-
-### Bot ignores `!status`
-
-- Message Content Intent is enabled in Developer Portal.
-- bot has channel visibility.
-- command prefix matches `BOT_COMMAND_PREFIX`.
-- bot is not being tested in a channel it cannot read.
-
-### Bot replies, but proactive alerts do not post
-
-- `DISCORD_ALERT_CHANNEL_ID` is set in `bot/.env`.
-- channel ID was copied with Developer Mode.
-- bot has `View Channels` and `Send Messages` permission in that channel.
-- active alerts that existed before startup are intentionally marked seen.
-- trigger a new alert after the bot starts.
-
-### Gemini responses are not humanized
-
-- `GOOGLE_GENERATIVE_AI_API_KEY` is set in `bot/.env`.
-- `GEMINI_MODEL` is valid.
-- fallback responses are expected if Gemini fails.
-
-### Convex connection error
-
-- `CONVEX_URL` is present in `bot/.env`.
-- `CONVEX_URL` points to the hosted Convex deployment.
-- hosted backend is reachable.
-
-### Need to change env values
-
-Delete `bot/.env` and run:
-
-```bash
-make bot
-```
-
-The setup command will copy `bot/.env.example` again and reprompt.
 
 ## Available Scripts
 
