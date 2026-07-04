@@ -178,7 +178,7 @@ current-sense tap standing in for an ACS712 sensor. The same pattern would
 repeat for the other two rooms.
 
 👉 **[Hardware schematic, sketch, and wiring notes →](docs/hardware-schematic/README.md)**
-👉 **[Open live in Wokwi →](https://wokwi.com/projects/468589357038198785)**
+👉 **[Open live in Wokwi →](https://wokwi.com/projects/468597321072296961)**
 
 
 ## 🔄 How the Simulation Works

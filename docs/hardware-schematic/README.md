@@ -1,3 +1,4 @@
+![Wokwi circuit screenshot](circuit-ss.png)
 # Hardware / Electrical Schematic
 
 This is a **concept-only** Wokwi circuit. It is not connected to the live
@@ -6,7 +7,7 @@ Convex (see the main [README](../../README.md)). This schematic exists purely
 to answer the requirement: *"if this office actually had smart-controlled
 lights and fans, how would you wire and sense them?"*
 
-Open it directly here: **[Wokwi project](https://wokwi.com/projects/468589357038198785)**
+Open it directly here: **[Wokwi project](https://wokwi.com/projects/468597321072296961)**
 (or open `diagram.json` + `sketch.ino` from this folder in your own Wokwi
 project — same files).
 
