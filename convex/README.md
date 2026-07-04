@@ -1,90 +1,34 @@
-# Welcome to your Convex functions directory!
+# Convex Backend — Energy Monitoring System
 
-Write your Convex functions here.
-See https://docs.convex.dev/functions for more.
+This directory contains the entire Convex backend for the energy monitoring system.
 
-A query function that takes two arguments looks like:
+## Structure
 
-```ts
-// convex/myFunctions.ts
-import { query } from "./_generated/server";
-import { v } from "convex/values";
+| File | Purpose |
+|---|---|
+| `schema.ts` | Database schema — `devices`, `powerLog`, `alerts` tables |
+| `office.ts` | Query functions consumed by both the dashboard and Discord bot |
+| `simulator.ts` | Simulation tick — flips devices, logs power, triggers alerts |
+| `alerts.ts` | Alert condition evaluation and lifecycle management |
+| `seed.ts` | Seeds 15 devices across 3 rooms |
+| `crons.ts` | 3-second simulator cron schedule |
+| `domain.ts` | Room IDs, device types, alert type definitions |
+| `time.ts` | Timezone-aware office hours helper |
 
-export const myQueryFunction = query({
-  // Validators for arguments.
-  args: {
-    first: v.number(),
-    second: v.string(),
-  },
+## Key Design Decision
 
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Read the database as many times as you need here.
-    // See https://docs.convex.dev/database/reading-data.
-    const documents = await ctx.db.query("tablename").collect();
+Both the React dashboard and the Discord bot call the **same query functions** in `office.ts` over HTTP. This guarantees one source of truth — no duplicate logic, no sync bugs.
 
-    // Arguments passed from the client are properties of the args object.
-    console.log(args.first, args.second);
+## Development
 
-    // Write arbitrary JavaScript here: filter, aggregate, build derived data,
-    // remove non-public properties, or create new objects.
-    return documents;
-  },
-});
+```bash
+bun run convex          # Push functions once
+bun run convex:watch    # Watch mode (auto-push on changes)
+bun run convex:dash     # Open Convex dashboard
 ```
 
-Using this query function in a React component looks like:
+Deploy with:
 
-```ts
-const data = useQuery(api.myFunctions.myQueryFunction, {
-  first: 10,
-  second: "hello",
-});
+```bash
+bun run convex:deploy
 ```
-
-A mutation function looks like:
-
-```ts
-// convex/myFunctions.ts
-import { mutation } from "./_generated/server";
-import { v } from "convex/values";
-
-export const myMutationFunction = mutation({
-  // Validators for arguments.
-  args: {
-    first: v.string(),
-    second: v.string(),
-  },
-
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Insert or modify documents in the database here.
-    // Mutations can also read from the database like queries.
-    // See https://docs.convex.dev/database/writing-data.
-    const message = { body: args.first, author: args.second };
-    const id = await ctx.db.insert("messages", message);
-
-    // Optionally, return a value from your mutation.
-    return await ctx.db.get("messages", id);
-  },
-});
-```
-
-Using this mutation function in a React component looks like:
-
-```ts
-const mutation = useMutation(api.myFunctions.myMutationFunction);
-function handleButtonPress() {
-  // fire and forget, the most common way to use mutations
-  mutation({ first: "Hello!", second: "me" });
-  // OR
-  // use the result once the mutation has completed
-  mutation({ first: "Hello!", second: "me" }).then((result) =>
-    console.log(result),
-  );
-}
-```
-
-Use the Convex CLI to push your functions to a deployment. See everything
-the Convex CLI can do by running `npx convex -h` in your project root
-directory. To learn more, launch the docs with `npx convex docs`.
