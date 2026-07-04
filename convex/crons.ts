@@ -6,7 +6,7 @@ const crons = cronJobs();
 
 crons.interval(
   "simulator tick",
-  { seconds: 10 },
+  { seconds: 3 },
   internal.simulator.simulatorTick,
   {},
 );
