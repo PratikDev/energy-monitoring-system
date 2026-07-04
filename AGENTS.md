@@ -28,6 +28,21 @@ No test runner or test script is configured yet. For now, validate changes with 
 
 Keep commits atomic: commit only the files you touched and list each path explicitly. For tracked files run `git commit -m "<scoped message>" -- path/to/file1 path/to/file2`. For brand-new files, use the one-liner `git restore --staged :/ && git add "path/to/file1" "path/to/file2" && git commit -m "<scoped message>" -- path/to/file1 path/to/file2`. Always check the changed files by `git status` before committing. Never commit files from the thread context. Never change any file content before committing. PRs should explain user-visible impact, list schema or config changes, and link related issues. Pull requests should include a short summary, validation steps, and linked issues when relevant. Note any schema, environment, or migration impact explicitly.
 
+## Bot Development
+
+The Discord bot lives in `bot/` and runs on Bun. To start it locally:
+
+```bash
+make bot
+```
+
+For development without Docker:
+```bash
+bun --cwd bot dev
+```
+
+The bot shares Convex query functions with the dashboard — see `convex/office.ts`.
+
 ## Agent-Specific Instructions
 
 Keep edits scoped to the requested change. Do not rewrite generated shadcn UI primitives unless the task requires it. Before changing shared styling or config, check `components.json`, `src/index.css`, and the relevant TypeScript config so new code follows the existing setup.
