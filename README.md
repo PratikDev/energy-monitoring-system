@@ -172,6 +172,15 @@ this project. It exists to answer a separate requirement: *"if this office
 actually had smart-controlled lights and fans, how would you wire and sense
 them?"*
 
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/hardware-schematic/circuit-ss.png" alt="Wokwi circuit schematic — ESP32 driving 5 relay modules for 3 lights and 2 fans with a current-sense potentiometer" width="100%" />
+      <br/><em>Work Room 1 circuit — ESP32 switches 3 lights + 2 fans via relay modules, potentiometer stands in for ACS712 current sensor</em>
+    </td>
+  </tr>
+</table>
+
 It models one representative room — **Work Room 1** (3 lights + 2 fans) —
 showing an ESP32 switching each device through a relay module, plus a
 current-sense tap standing in for an ACS712 sensor. The same pattern would
