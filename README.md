@@ -190,6 +190,23 @@ repeat for the other two rooms.
 👉 **[Open live in Wokwi →](https://wokwi.com/projects/468597321072296961)**
 
 
+## 🔐 Environment Variables
+
+The dashboard and bot rely on these environment variables:
+
+| Variable | Required | Default | Used By | Purpose |
+|---|---|---|---|---|
+| `CONVEX_URL` | Yes | — | Bot | Hosted Convex deployment URL |
+| `DISCORD_BOT_TOKEN` | Yes | — | Bot | Discord bot login token |
+| `DISCORD_ALERT_CHANNEL_ID` | Yes | — | Bot | Channel for proactive alert posts |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Yes | — | Bot | Gemini API key for humanized responses |
+| `GEMINI_MODEL` | No | `gemini-2.5-flash` | Bot | Gemini model override |
+| `BOT_COMMAND_PREFIX` | No | `!` | Bot | Prefix for Discord commands |
+| `ALERT_POLL_INTERVAL_MS` | No | `30000` | Bot | How often to poll for new alerts |
+| `ENABLE_DEMO_CONTROLS` | No | — | Dashboard | Enables the demo alert toggle button |
+
+See [bot/.env.example](bot/.env.example) for the full bot configuration template.
+
 ## 🔄 How the Simulation Works
 
 The office data is simulated entirely inside Convex — no external processes needed.
